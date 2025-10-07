@@ -1,5 +1,7 @@
+// Import generator for fake restaurants and reviews used in dev/testing
 import { generateFakeRestaurantsAndReviews } from "@/src/lib/fakeRestaurants.js";
 
+// Import Firestore functions we use across this module
 import {
   collection,
   onSnapshot,
@@ -16,8 +18,10 @@ import {
   getFirestore,
 } from "firebase/firestore";
 
+// Import the already-initialized client-side Firestore instance
 import { db } from "@/src/lib/firebase/clientApp";
 
+// Update the photo reference on a restaurant document
 export async function updateRestaurantImageReference(
   restaurantId,
   publicImageUrl
@@ -28,6 +32,7 @@ export async function updateRestaurantImageReference(
   }
 }
 
+// Placeholder helper for transactional rating updates (not implemented)
 const updateWithRating = async (
   transaction,
   docRef,
@@ -37,10 +42,12 @@ const updateWithRating = async (
   return;
 };
 
+// Placeholder to add a review to a restaurant (not implemented)
 export async function addReviewToRestaurant(db, restaurantId, review) {
   return;
 }
 
+// Apply filters to a Firestore query based on the passed filters object
 function applyQueryFilters(q, { category, city, price, sort }) {
   if (category) {
     q = query(q, where("category", "==", category));
@@ -59,6 +66,7 @@ function applyQueryFilters(q, { category, city, price, sort }) {
   return q;
 }
 
+// Get restaurants once using optional filters (server use)
 export async function getRestaurants(db = db, filters = {}) {
   let q = query(collection(db, "restaurants"));
 
@@ -74,6 +82,7 @@ export async function getRestaurants(db = db, filters = {}) {
   });
 }
 
+// Subscribe to restaurant query updates and invoke callback with results
 export function getRestaurantsSnapshot(cb, filters = {}) {
   if (typeof cb !== "function") {
     console.log("Error: The callback parameter is not a function");
@@ -97,6 +106,7 @@ export function getRestaurantsSnapshot(cb, filters = {}) {
   });
 }
 
+// Get a single restaurant document by id
 export async function getRestaurantById(db, restaurantId) {
   if (!restaurantId) {
     console.log("Error: Invalid ID received: ", restaurantId);
@@ -110,10 +120,12 @@ export async function getRestaurantById(db, restaurantId) {
   };
 }
 
+// Placeholder to subscribe to a restaurant document snapshot by id (not implemented)
 export function getRestaurantSnapshotById(restaurantId, cb) {
   return;
 }
 
+// Get reviews for a restaurant ordered by timestamp desc
 export async function getReviewsByRestaurantId(db, restaurantId) {
   if (!restaurantId) {
     console.log("Error: Invalid restaurantId received: ", restaurantId);
@@ -136,6 +148,7 @@ export async function getReviewsByRestaurantId(db, restaurantId) {
   });
 }
 
+// Subscribe to review snapshots for a restaurant and call cb with results
 export function getReviewsSnapshotByRestaurantId(restaurantId, cb) {
   if (!restaurantId) {
     console.log("Error: Invalid restaurantId received: ", restaurantId);
@@ -159,6 +172,7 @@ export function getReviewsSnapshotByRestaurantId(restaurantId, cb) {
   });
 }
 
+// Add a set of fake restaurants and ratings to Firestore for testing
 export async function addFakeRestaurantsAndReviews() {
   const data = await generateFakeRestaurantsAndReviews();
   for (const { restaurantData, ratingsData } of data) {
