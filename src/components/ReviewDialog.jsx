@@ -1,11 +1,16 @@
+// mark this component as client-side for Next.js
 "use client";
 
-// This components handles the review dialog and uses a next.js feature known as Server Actions to handle the form submission
+// This component handles the review dialog and uses a Next.js Server Action for form submission
 
+// import React hooks used in the component
 import { useEffect, useLayoutEffect, useRef } from "react";
+// import a rating picker sub-component
 import RatingPicker from "@/src/components/RatingPicker.jsx";
+// import the server action that handles form submission
 import { handleReviewFormSubmission } from "@/src/app/actions.js";
 
+// ReviewDialog displays a modal dialog with a form to add a review
 const ReviewDialog = ({
   isOpen,
   handleClose,
@@ -14,9 +19,10 @@ const ReviewDialog = ({
   userId,
   id,
 }) => {
+  // ref to the dialog DOM element
   const dialog = useRef();
 
-  // dialogs only render their backdrop when called with `showModal`
+  // dialogs only render their backdrop when showModal() is called
   useLayoutEffect(() => {
     if (isOpen) {
       dialog.current.showModal();
@@ -25,18 +31,20 @@ const ReviewDialog = ({
     }
   }, [isOpen, dialog]);
 
+  // close if clicked outside the dialog content
   const handleClick = (e) => {
-    // close if clicked outside the modal
     if (e.target === dialog.current) {
       handleClose();
     }
   };
 
+  // render the dialog with a form that uses a Server Action
   return (
     <dialog ref={dialog} onMouseDown={handleClick}>
       <form
         action={handleReviewFormSubmission}
         onSubmit={() => {
+          // after submit, close the dialog
           handleClose();
         }}
       >
@@ -81,4 +89,5 @@ const ReviewDialog = ({
   );
 };
 
+// export the component as default
 export default ReviewDialog;
